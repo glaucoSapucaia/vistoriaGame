@@ -5,11 +5,11 @@ import os
 # Garante que o Python ache a pasta raiz (onde estão 'app' e 'engine')
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-# Importa as configurações do nível
+# Importa as configurações de níveiis
 try:
-    from app.niveis import FASE_CASA_CONFIG
+    from app.niveis import FASE_CASA_CONFIG, FASE_COMERCIAL_CONFIG # <-- Adicionado aqui
 except ImportError:
-    from niveis import FASE_CASA_CONFIG
+    from niveis import FASE_CASA_CONFIG, FASE_COMERCIAL_CONFIG
 
 from engine.scene_manager import executar_fase
 
@@ -128,8 +128,9 @@ def selecao_fases():
             "imagem": "assets/images/menu/casa2pav.jpg",
         },
         {
-            "nome": "Comercial - em construção",
-            "imagem": "assets/images/menu/casa2pav.jpg",
+            
+            "nome": "Galpão Comercial", 
+            "imagem": "assets/images/fases/galpao/frente.jpg",
         },
         {
             "nome": "Abandonado - em construção",
@@ -195,7 +196,6 @@ def selecao_fases():
             texto_y = rect.y + rect.height * 0.75
             tela.blit(nome_texto, (texto_x, texto_y))
 
-        # Botão Voltar
         pygame.draw.rect(tela, MARROM_ESCURO, voltar_botao, border_radius=10)
         voltar_texto = fonte.render("Voltar ao Menu", True, BRANCO)
         voltar_rect = voltar_texto.get_rect(center=voltar_botao.center)
@@ -213,18 +213,21 @@ def selecao_fases():
                 # Checa botões de Fase
                 for i, (rect, nome) in enumerate(botoes_fases):
                     if rect.collidepoint(evento.pos):
-                        if nome == "Casa":
-                            
-                            def resetar_musica():
-                                pygame.mixer.music.stop()
-                                pygame.mixer.music.load("assets/music/ambiente.mp3")
-                                pygame.mixer.music.set_volume(volume)
-                                pygame.mixer.music.play(-1)
+                        
+                        def resetar_musica():
+                            pygame.mixer.music.stop()
+                            pygame.mixer.music.load("assets/music/ambiente.mp3")
+                            pygame.mixer.music.set_volume(volume)
+                            pygame.mixer.music.play(-1)
 
+                        if nome == "Casa":
                             executar_fase(tela, fonte, LARGURA, ALTURA, FASE_CASA_CONFIG, resetar_musica)
                             
+                        elif nome == "Galpão Comercial":
+                            executar_fase(tela, fonte, LARGURA, ALTURA, FASE_COMERCIAL_CONFIG, resetar_musica)
+                            
                 if voltar_botao.collidepoint(evento.pos):
-                    return  # volta ao menu principal
+                    return # Volta ao menú principal
 
 
 if __name__ == "__main__":
